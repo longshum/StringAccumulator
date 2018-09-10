@@ -1,6 +1,8 @@
 package com.longshum.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -59,30 +61,53 @@ public class StringAccumulatorTest {
 		}
 	}
 	
-	@Test(expected = Exception.class)
+	@Test
 	public void testAddNegativeNumber() throws Exception{
 		StringAccumulator tester = new StringAccumulator();
+		String errorMessage=null;
 		try {
 			int result=tester.add("1,2,3,4,-5, 1000");
 		}
 		catch(Exception e)
 		{
-			System.out.println("testAddNegativeNumber: " + e.getMessage());
-			throw e;
+			errorMessage = e.getMessage();
 		}
+		
+		assertNotNull(errorMessage);
+		assertTrue(errorMessage.indexOf("negatives not allowed")>=0);
+		
+		assertTrue(errorMessage.indexOf("1")<0);
+		assertTrue(errorMessage.indexOf("2")<0);
+		assertTrue(errorMessage.indexOf("3")<0);
+		assertTrue(errorMessage.indexOf("4")<0);
+		
+		assertTrue(errorMessage.indexOf("-5")>0);
+		
+		
 	}
 	
-	@Test(expected = Exception.class)
+	@Test
 	public void testAddNegativeNumberWithMultipleDelimiters() throws Exception{
 		StringAccumulator tester = new StringAccumulator();
+		String errorMessage =null;
 		try {
-			int result=tester.add("//;|***|,\n1,2,3,4***-5, -1000");
+			int result=tester.add("//;|***|,\n1,-2,3,4***-5, -1000");
 		}
 		catch(Exception e)
 		{
-			System.out.println("testAddNegativeNumberWithMultipleDelimiters:" + e.getMessage());
-			throw e;
+			errorMessage = e.getMessage();
 		}
+		
+		assertNotNull(errorMessage);
+		assertTrue(errorMessage.indexOf("negatives not allowed")>=0);
+		
+		assertTrue(errorMessage.indexOf("3")<0);
+		assertTrue(errorMessage.indexOf("4")<0);
+		
+		assertTrue(errorMessage.indexOf("-2")>0);
+		assertTrue(errorMessage.indexOf("-5")>0);
+		assertTrue(errorMessage.indexOf("-1000")>0);
+		
 	}
 
 }
